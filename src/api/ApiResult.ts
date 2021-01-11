@@ -1,5 +1,5 @@
 import { ErrorCodes } from './ResultCodes';
-import { IResultBase, IListStructBase } from '../types';
+import { IResultBase, IListStructBase,IListPageSizeStructBase } from '../types';
 import {
     HttpException,
     HttpStatus,
@@ -19,6 +19,18 @@ export class ListStruct<T> implements IListStructBase<T> {
         if (statistical) this.statistical = statistical;
     }
 }
+
+export class ListPageSizeStruct<T> implements IListPageSizeStructBase<T> {
+    data: T;
+    pageSize: number;
+    count?: number;
+    constructor(data: T, pageSize: number, count?: number) {
+        this.data = data;
+        this.pageSize = pageSize;
+        if (count || count === 0) this.count = count;
+    }
+}
+
 
 export class Result<T> implements IResultBase {
     public code: number = ErrorCodes.success;

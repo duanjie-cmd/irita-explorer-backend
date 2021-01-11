@@ -242,3 +242,10 @@ export const voteOptions = {
     4: 'no_with_veto'
 }
 export const proposal = 'Proposal'
+
+export const queryBlockState = {
+    first: 'first',
+    end: 'end',
+    prev: 'prev',
+    after: 'after'
+}

@@ -1,7 +1,7 @@
 import { BaseReqDto, PagingReqDto } from './base.dto';
 import { ApiError } from '../api/ApiResult';
 import { ErrorCodes } from '../api/ResultCodes';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty,ApiPropertyOptional } from '@nestjs/swagger';
 import { Coin } from './common.res.dto';
 
 export class BlockResDto {
@@ -54,15 +54,32 @@ export class BlockStakingResDto {
     }
 }
 
-export class BlockListReqDto extends PagingReqDto{
-    static validate(value: any): void {
-        super.validate(value);
-    }
+// export class BlockListReqDto extends PagingReqDto{
+//     static validate(value: any): void {
+//         super.validate(value);
+//     }
 
-    static convert(value: any): any {
-        super.convert(value);
-        return value;
-    }
+//     static convert(value: any): any {
+//         super.convert(value);
+//         return value;
+//     }
+// }
+
+export class BlockListReqDto {
+    @ApiPropertyOptional({description:'first/end/prev/after'})
+    state: string;
+
+    @ApiPropertyOptional()
+    currentMaxHeight: number;
+
+    @ApiPropertyOptional()
+    currentMinHeight: number;
+
+    @ApiProperty()
+    pageSize: number;
+
+    @ApiPropertyOptional({description:'true/false'})
+    useCount: boolean;
 }
 
 export class BlockDetailReqDto extends BaseReqDto {

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { ListStruct } from '../api/ApiResult';
+import { ListStruct,ListPageSizeStruct } from '../api/ApiResult';
 import {
     BlockListReqDto,
     BlockDetailReqDto,
@@ -16,7 +16,7 @@ import { Logger } from '../logger';
 import { addressPrefix } from '../constant';
 import { getAddress, hexToBech32 } from '../util/util';
 import { getConsensusPubkey } from '../helper/staking.helper';
-
+import { queryBlockState } from '../constant'
 @Injectable()
 export class BlockService {
 
@@ -24,17 +24,38 @@ export class BlockService {
         @InjectModel('Block') private blockModel: Model<IBlock>,
         @InjectModel('StakingValidator') private stakingValidatorModel: any) {}
 
-    async queryBlockList(query: BlockListReqDto): Promise<ListStruct<BlockListResDto[]>> {
-        const { pageNum, pageSize, useCount } = query;
+    async queryBlockList(query: BlockListReqDto): Promise<ListPageSizeStruct<BlockListResDto[]>> {
+        const { state, currentMaxHeight, currentMinHeight, pageSize, useCount } = query;
         let count: number;
-        const b: IBlockStruct[] = await (this.blockModel as any).findList(pageNum, pageSize);
+        let b: IBlockStruct[];
+        let height: number;
+        switch (state) {
+            case queryBlockState.first:
+                height = await (this.blockModel as any).findHeightByParam(-1);
+                b = await (this.blockModel as any).findList(state, height, Number(pageSize));
+                break;
+            case queryBlockState.end:
+                height = await (this.blockModel as any).findHeightByParam(1);
+                b = await (this.blockModel as any).findList(state, height, Number(pageSize));
+                break;
+            case queryBlockState.prev:
+                b = await (this.blockModel as any).findList(state, Number(currentMaxHeight), Number(pageSize));
+            break;
+            case queryBlockState.after:
+                b = await (this.blockModel as any).findList(state, Number(currentMinHeight), Number(pageSize));
+                break;
+            default:
+                height = await (this.blockModel as any).findHeightByParam(-1);
+                b = await (this.blockModel as any).findList(state, height, pageSize);
+                break;
+        }
         if (useCount) {
             count = await (this.blockModel as any).findCount();
         }
         const res: BlockListResDto[] = b.map((b) => {
             return new BlockListResDto(b.height, b.hash, b.txn, b.time);
         });
-        return new ListStruct(res, pageNum, pageSize, count);
+        return new ListPageSizeStruct(res, pageSize, count);
     }
 
     async queryBlockDetail(p: BlockDetailReqDto): Promise<BlockListResDto | null> {

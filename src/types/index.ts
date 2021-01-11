@@ -11,6 +11,12 @@ export interface IListStructBase<T> {
     count?: number;
 }
 
+export interface IListPageSizeStructBase<T> {
+    data?: T;
+    pageSize?: number;
+    count?: number;
+}
+
 export interface IListStruct {
     data?: any[],
     count?: number

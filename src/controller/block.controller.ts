@@ -1,7 +1,7 @@
 import { Controller, Get, Param, Query, UsePipes } from '@nestjs/common';
 import { BlockService } from '../service/block.service';
 import { Result } from '../api/ApiResult';
-import { ListStruct } from '../api/ApiResult';
+import { ListStruct,ListPageSizeStruct } from '../api/ApiResult';
 import { 
     BlockListReqDto, 
     BlockDetailReqDto,
@@ -21,9 +21,9 @@ export class BlockController {
     }
 
     @Get()
-    async queryBlockList(@Query() query: BlockListReqDto): Promise<Result<ListStruct<BlockListResDto[]>>> {
-        const data: ListStruct<BlockListResDto[]> = await this.blockService.queryBlockList(query);
-        return new Result<ListStruct<BlockListResDto[]>>(data);
+    async queryBlockList(@Query() query: BlockListReqDto): Promise<Result<ListPageSizeStruct<BlockListResDto[]>>> {
+        const data: ListPageSizeStruct<BlockListResDto[]> = await this.blockService.queryBlockList(query);
+        return new Result<ListPageSizeStruct<BlockListResDto[]>>(data);
     }
 
     @Get('latest')

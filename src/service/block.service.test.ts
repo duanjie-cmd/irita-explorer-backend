@@ -7,7 +7,8 @@ import {
     BlockListResDto,
     ValidatorsetsReqDto,
     ValidatorsetsResDto, } from '../dto/block.dto';
-import { ListStruct } from '../api/ApiResult';
+import { ListPageSizeStruct } from '../api/ApiResult';
+import { first } from 'rxjs/operators';
 
 
 describe('service module', () => {
@@ -25,12 +26,14 @@ describe('service module', () => {
     describe('queryBlockList', () => {
         it('should return block list', async () => {
             let req: BlockListReqDto = {
-                pageNum: 1,
+                state: 'first',
+                currentMaxHeight: 0,
+                currentMinHeight: 0,
                 pageSize: 10,
                 useCount: true,
             };
 
-            const data: ListStruct<BlockListResDto[]> = await blockService.queryBlockList(req);
+            const data: ListPageSizeStruct<BlockListResDto[]> = await blockService.queryBlockList(req);
             expect(data).toBeDefined();
         });
     });

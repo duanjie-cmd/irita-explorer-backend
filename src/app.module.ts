@@ -74,7 +74,7 @@ const params = {
         }
     ],
 };
-params.providers.push(TasksService);
+// params.providers.push(TasksService);
 
 // if (cfg.env !== 'development') {
 //     params.providers.push(TasksService);
