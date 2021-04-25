@@ -894,7 +894,7 @@ TxSchema.statics.queryServiceRespondTx = async function(serviceName: string, pro
     if (provider && provider.length) {
         queryParameters['msgs.msg.provider'] = provider;
     }
-    return await this.find(queryParameters, {...dbRes.common, 'msgs.msg.ex':1})
+    return await this.find(queryParameters, {...dbRes.common})
         .sort({ 'height': -1 })
         .skip((Number(pageNum) - 1) * Number(pageSize))
         .limit(Number(pageSize));
